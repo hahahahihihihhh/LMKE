@@ -29,8 +29,8 @@ if __name__ == '__main__':
 	parser.add_argument('--epoch', type=int, default=200)
 	parser.add_argument('--weight_decay', type=float, default=1e-7)
 
-	parser.add_argument('--data', type=str, default='fb15k-237') 
-	parser.add_argument('--plm', type=str, default='bert', choices = ['bert', 'bert_tiny', 'deberta', 'deberta_large', 'roberta', 'roberta_large'])
+	parser.add_argument('--data', type=str, default='umls')
+	parser.add_argument('--plm', type=str, default='bert_tiny', choices = ['bert', 'bert_tiny', 'deberta', 'deberta_large', 'roberta', 'roberta_large'])
 	parser.add_argument('--description', type=str, default='desc')
 
 	parser.add_argument('--load_path', type=str, default=None)
@@ -129,9 +129,16 @@ if __name__ == '__main__':
 		}
 
 
-	lm_config = AutoConfig.from_pretrained(plm_name, cache_dir = './cached_model')
-	lm_tokenizer = AutoTokenizer.from_pretrained(plm_name, do_basic_tokenize=False, cache_dir = './cached_model')
-	lm_model = AutoModel.from_pretrained(plm_name, config=lm_config, cache_dir = './cached_model')
+	# local
+	model_path = "./cached_model/models--{}".format(plm_name)
+	lm_config = AutoConfig.from_pretrained(model_path, local_files_only=True)
+	lm_tokenizer = AutoTokenizer.from_pretrained(model_path, local_files_only=True)
+	lm_model = AutoModel.from_pretrained(model_path, config=lm_config, local_files_only=True)
+
+	# remote
+	# lm_config = AutoConfig.from_pretrained(plm_name, cache_dir = './cached_model')
+	# lm_tokenizer = AutoTokenizer.from_pretrained(plm_name, do_basic_tokenize=False, cache_dir = './cached_model')
+	# lm_model = AutoModel.from_pretrained(plm_name, config=lm_config, cache_dir = './cached_model')
 	
 	#pdb.set_trace()
 

@@ -137,6 +137,7 @@ class Trainer:
 			modes = ['triple_classification']
 
 		for epc in range(self.load_epoch+1, epoch):
+			print(epc)
 			total_loss_triple_classification = 0
 			total_loss_link_prediction = 0
 			total_klloss = 0
@@ -357,7 +358,7 @@ class Trainer:
 						
 						total_loss_link_prediction += loss.item() 
 
-					
+
 					optimizer.zero_grad()
 					loss.backward()
 					optimizer.step()
@@ -577,7 +578,7 @@ class Trainer:
 				candidate_degrees = [ degrees.get(tar, 0) for tar in entity_list]
 
 				for given in tqdm(groundtruth[split][target].keys()):
-					
+
 					expects = groundtruth[split][target][given] 
 					corrects = groundtruth['all'][target][given] 
 					
