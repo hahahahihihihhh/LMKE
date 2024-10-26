@@ -25,32 +25,32 @@ if __name__ == '__main__':
 	
 	parser.add_argument('--bert_lr', type=float, default=1e-5)
 	parser.add_argument('--model_lr', type=float, default=5e-4)
-	parser.add_argument('--batch_size', type=int, default=64)
+	parser.add_argument('--batch_size', type=int, default=256)	# 64
 	parser.add_argument('--epoch', type=int, default=200)
 	parser.add_argument('--weight_decay', type=float, default=1e-7)
 
-	parser.add_argument('--data', type=str, default='umls')
-	parser.add_argument('--plm', type=str, default='bert_tiny', choices = ['bert', 'bert_tiny', 'deberta', 'deberta_large', 'roberta', 'roberta_large'])
+	parser.add_argument('--data', type=str, default='umls')	# fb15k-237
+	parser.add_argument('--plm', type=str, default='bert_tiny', choices = ['bert', 'bert_tiny', 'deberta', 'deberta_large', 'roberta', 'roberta_large'])	# bert
 	parser.add_argument('--description', type=str, default='desc')
 
 	parser.add_argument('--load_path', type=str, default=None)
 	parser.add_argument('--load_epoch', type=int, default=-1)
 	parser.add_argument('--load_metric', type=str, default='hits1')
 
-	parser.add_argument('--max_desc_length', type=int, default=512)
+	parser.add_argument('--max_desc_length', type=int, default=50)	# 512
 
 	# directly run test
 	parser.add_argument('--link_prediction', default=False, action = 'store_true')
 	parser.add_argument('--triple_classification', default=False, action = 'store_true')
 
-	parser.add_argument('--add_tokens', default=False, action = 'store_true', help = 'add entity and relation tokens into the vocabulary')
-	parser.add_argument('--p_tuning', default=False, action = 'store_true', help = 'add learnable soft prompts')
-	parser.add_argument('--prefix_tuning', default=False, action = 'store_true', help = 'fix language models and only tune added components')
-	parser.add_argument('--rdrop', default=False, action = 'store_true')
-	parser.add_argument('--self_adversarial', default=False, action = 'store_true', help = 'self adversarial negative sampling')
+	parser.add_argument('--add_tokens', default=True, action = 'store_true', help = 'add entity and relation tokens into the vocabulary')	# False
+	parser.add_argument('--p_tuning', default=True, action = 'store_true', help = 'add learnable soft prompts')	# False
+	parser.add_argument('--prefix_tuning', default=True, action = 'store_true', help = 'fix language models and only tune added components')	# False
+	parser.add_argument('--rdrop', default=True, action = 'store_true')	# False
+	parser.add_argument('--self_adversarial', default=True, action = 'store_true', help = 'self adversarial negative sampling')	# False
 	parser.add_argument('--no_use_lm', default=False, action = 'store_true')
-	parser.add_argument('--use_structure', default=False, action = 'store_true')
-	parser.add_argument('--contrastive', default=False, action = 'store_true')
+	parser.add_argument('--use_structure', default=True, action = 'store_true')	# False
+	parser.add_argument('--contrastive', default=True, action = 'store_true')	# False
 	parser.add_argument('--wandb', default=False, action = 'store_true')
 
 	parser.add_argument('--task', default='LP', choices=['LP', 'TC'])
