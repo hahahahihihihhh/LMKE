@@ -25,11 +25,11 @@ if __name__ == '__main__':
 	
 	parser.add_argument('--bert_lr', type=float, default=1e-5)
 	parser.add_argument('--model_lr', type=float, default=5e-4)
-	parser.add_argument('--batch_size', type=int, default=256)	# 64
-	parser.add_argument('--epoch', type=int, default=200)
+	parser.add_argument('--batch_size', type=int, default=64)	# 64
+	parser.add_argument('--epoch', type=int, default=20)
 	parser.add_argument('--weight_decay', type=float, default=1e-7)
 
-	parser.add_argument('--data', type=str, default='umls')	# fb15k-237
+	parser.add_argument('--data', type=str, default='SZ-Taxi-2015_1_1_0_00')	# fb15k-237
 	parser.add_argument('--plm', type=str, default='bert_tiny', choices = ['bert', 'bert_tiny', 'deberta', 'deberta_large', 'roberta', 'roberta_large'])	# bert
 	parser.add_argument('--description', type=str, default='desc')
 
@@ -37,7 +37,7 @@ if __name__ == '__main__':
 	parser.add_argument('--load_epoch', type=int, default=-1)
 	parser.add_argument('--load_metric', type=str, default='hits1')
 
-	parser.add_argument('--max_desc_length', type=int, default=50)	# 512
+	parser.add_argument('--max_desc_length', type=int, default=256)	# 512
 
 	# directly run test
 	parser.add_argument('--link_prediction', default=False, action = 'store_true')
@@ -127,7 +127,15 @@ if __name__ == '__main__':
 			'text': ['./data/WN18RR/my_entity2text.txt', 
 				'./data/WN18RR/relation2text.txt']
 		}
-
+	elif arg.data == 'SZ-Taxi-2015_1_1_0_00':
+		in_paths = {
+			'dataset': arg.data,
+			'train': './data/SZ-Taxi/2015_1_1_0_00/train.tsv',
+			'valid': './data/SZ-Taxi/2015_1_1_0_00/dev.tsv',
+			'test': './data/SZ-Taxi/2015_1_1_0_00/dev.tsv',
+			'text': ['./data/SZ-Taxi/2015_1_1_0_00/entity2text.txt',
+					 './data/SZ-Taxi/2015_1_1_0_00/relation2text.txt']
+		}
 
 	# local
 	model_path = "./cached_model/models--{}".format(plm_name)
