@@ -286,7 +286,7 @@ class LMKE(nn.Module):
 
 		batch_size = len(positions)
 		device = self.lm_model_target.device
-		
+
 		target_idx = torch.LongTensor([positions[i][0] for i in range(batch_size)]).to(device)
 		target_pos = torch.LongTensor([positions[i][1] for i in range(batch_size)]).to(device)
 
@@ -340,9 +340,11 @@ class LMKE(nn.Module):
 			h_logdeg, r_logdeg, t_logdeg = (h_deg+1).log(), (r_deg+1).log(), (t_deg+1).log()
 
 			if mode == 'link_prediction_h': 
-				deg_feature = torch.cat([h_logdeg, t_logdeg], dim=-1)
-			elif mode == 'link_prediction_t':
+				# deg_feature = torch.cat([h_logdeg, t_logdeg], dim=-1)
 				deg_feature = torch.cat([t_logdeg, h_logdeg], dim=-1)
+			elif mode == 'link_prediction_t':
+				# deg_feature = torch.cat([t_logdeg, h_logdeg], dim=-1)
+				deg_feature = torch.cat([h_logdeg, t_logdeg], dim=-1)
 
 			target_pred = target_pred.expand(target_encoded.shape[0], target_pred.shape[0])
 			#print(deg_feature)

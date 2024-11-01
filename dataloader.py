@@ -172,7 +172,7 @@ class DataLoader(object):
 		self.relation_set = set([t[1] for t in (self.train_set + self.valid_set + self.test_set)])
 
 		self.tokenizer = tokenizer
-		self.tokenizer.add_tokens(['90217', '95968', '95969', '90218', '90219', '90220', '92899', '92900', '92856', '93851', '93852', '90221', '95068', '95069', '95070', '90222', '90223', '90224', '116097', '90225', '90226', '95501', '95502', '95503', '116220', '92231', '117189', '92237', '102138', '111380', '92241', '103763', '103764', '112746', '92688', '92689', '92690', '92691', '103765', '92694', '92697', '92692', '92693', '111369', '92695', '92696', '99907', '99909', '99910', '99881', '99902', '92858', '92878', '93220', '92876', '92877', '92881', '92883', '102121', '102124', '101301', '116219', '101298', '101300', '96475', '96484', '94159', '94160', '94161', '94162', '98668', '98669', '95970', '94163', '94164', '98670', '102120', '95071', '95072', '95073', '95075', '99880', '99882', '112727', '95504', '95505', '95506', '95507', '95598', '95933', '95508', '95934', '95935', '95936', '95570', '95571', '95599', '116221', '95915', '99905', '116098', '98671', '95975', '97349', '103351', '96478', '96485', '96486', '112141', '96758', '96760', '96761', '102128', '102129', '98662', '99630', '99631', '99632', '98666', '99629', '99628', '98672', '99627', '111973', '111974', '99903', '99906', '99904', '112728', '99953', '116100', '101297', '101299', '101303', '102122', '101305', '102123', '101302', '101304', '101306', '101307', '111969', '112671', '116157', '102134', '102137', '112101', '112102', '112103', '104638', '116099', '111370', '112138', '112139', '112140', '112142'])
+
 		for p in in_paths['text']:
 			self.load_text(p)
 
@@ -360,14 +360,14 @@ class DataLoader(object):
 
 
 		#batch_tokens_ = self.tokenizer(batch_texts, truncation = True, max_length = 512, return_tensors='pt', padding=True )
-		batch_tokens = self.my_tokenize(batch_tokens, max_length=512, padding=True, model=self.model)
+		batch_tokens = self.my_tokenize(batch_tokens, max_length=512, padding=True, model=self.model)		# h, r, t 拼接后句子的 token 列表
 
 
 		orig_vocab_size = self.orig_vocab_size
 		num_ent_rel_tokens = len(ent2id) + len(rel2id)
 
-		mask_idx = self.tokenizer.convert_tokens_to_ids(self.tokenizer.mask_token)
-		cls_idx = self.tokenizer.convert_tokens_to_ids(self.tokenizer.cls_token)
+		mask_idx = self.tokenizer.convert_tokens_to_ids(self.tokenizer.mask_token)	# 掩码 token
+		cls_idx = self.tokenizer.convert_tokens_to_ids(self.tokenizer.cls_token)	# 起始标记 token
 
 		for i, _ in enumerate(batch_tokens['input_ids']):
 			triple = batch_triples[i]
@@ -385,6 +385,9 @@ class DataLoader(object):
 
 		return batch_tokens, batch_positions
 
+
+	# ['[head_b1]', '[head_b2]', '[MASK]', '[head_a1]', '[head_a2]', '[rel_b1]', '[rel_b2]', '[rel_25]', '[rel_a1]',
+	#  '[rel_a2]', 'weather', '[tail_b1]', '[tail_b2]', '[ent_1]', '[tail_a1]', '[tail_a2]', 'without', 'clouds', '.']
 
 	def batch_tokenize_target(self, batch_triples=None, mode=None, targets = None):
 		batch_texts = []
@@ -406,7 +409,7 @@ class DataLoader(object):
 			text, tokens = self.element_to_text(target)
 			batch_texts.append(text)
 			batch_tokens.append(tokens)
-		
+
 		batch_tokens = self.my_tokenize(batch_tokens, max_length=512, padding=True, model=self.model)
 
 		for i, _ in enumerate(batch_tokens['input_ids']):
@@ -558,8 +561,8 @@ class DataLoader(object):
 		if self.p_tuning:
 			new_tokens += ["[head_b1]", "[head_b2]", "[head_a1]", "[head_a2]", 
 							"[rel_b1]", "[rel_b2]", "[rel_a1]", "[rel_a2]", 
-							"[tail_b1]", "[tail_b2]", "[tail_a1]", "[tail_a2]"] # continuous prompt 
-	
+							"[tail_b1]", "[tail_b2]", "[tail_a1]", "[tail_a2]"] # continuous prompt
+
 		self.tokenizer.add_tokens(new_tokens)
 
 	def count_degrees(self):

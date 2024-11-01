@@ -45,11 +45,11 @@ if __name__ == '__main__':
 
 	parser.add_argument('--add_tokens', default=True, action = 'store_true', help = 'add entity and relation tokens into the vocabulary')	# False
 	parser.add_argument('--p_tuning', default=True, action = 'store_true', help = 'add learnable soft prompts')	# False
-	parser.add_argument('--prefix_tuning', default=True, action = 'store_true', help = 'fix language models and only tune added components')	# False
-	parser.add_argument('--rdrop', default=True, action = 'store_true')	# False
+	parser.add_argument('--prefix_tuning', default=False, action = 'store_true', help = 'fix language models and only tune added components')	# False
+	parser.add_argument('--rdrop', default=False, action = 'store_true')	# False
 	parser.add_argument('--self_adversarial', default=True, action = 'store_true', help = 'self adversarial negative sampling')	# False
 	parser.add_argument('--no_use_lm', default=False, action = 'store_true')
-	parser.add_argument('--use_structure', default=True, action = 'store_true')	# False
+	parser.add_argument('--use_structure', default=False, action = 'store_true')	# False
 	parser.add_argument('--contrastive', default=True, action = 'store_true')	# False
 	parser.add_argument('--wandb', default=False, action = 'store_true')
 
@@ -226,4 +226,3 @@ if __name__ == '__main__':
 		trainer.triple_classification(split='test')
 	else:
 		trainer.run()
-

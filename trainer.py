@@ -149,7 +149,7 @@ class Trainer:
 			total_neg_acc = 0
 			total_hits1 = { i: 0 for i in ['h', 'r', 't']}
 
-			total_bce_acc = { i: 0 for i in ['h', 'r', 't']}
+			total_bce_acc = { i: 0 for i in ['h', 'r', 't']}		# Binary Cross-Entropy Accuracy
 			total_bce_acc_pos = { i: 0 for i in ['h', 'r', 't']}
 			total_bce_acc_neg = { i: 0 for i in ['h', 'r', 't']}
 
@@ -205,7 +205,7 @@ class Trainer:
 
 						label_idx_list = []
 
-						if hyperparams['contrastive']:
+						if hyperparams['contrastive']:			# inner batch contrastive study
 							labels = torch.zeros((len(real_triples), len(real_triples))).to(device)
 							if mode == "link_prediction_h":
 								targets = [ triple[0] for triple in real_triples]
@@ -333,7 +333,7 @@ class Trainer:
 							assert ( len(pos_idx+neg_idx) == 1 + neg_sampling_size)
 							assert ( i in pos_idx)
 							'''
-							
+
 							for j, bl in enumerate(bce_loss):
 								# separately add lm_loss, transe_loss, and ensembled_loss
 								l = bl[i]
@@ -559,8 +559,8 @@ class Trainer:
 			with torch.no_grad():
 				# calc entity target embeddings
 				random_map = [ i for i in range(n_ent)]
-				batch_list = [ random_map[i:i+batch_size] for i in range(0, n_ent, batch_size)] 
-			
+				batch_list = [ random_map[i:i+batch_size] for i in range(0, n_ent, batch_size)]
+
 				for batch in batch_list:
 					batch_targets = [ entity_list[_] for _ in batch]
 					target_inputs, target_positions = data_loader.batch_tokenize_target(targets=batch_targets)
@@ -606,7 +606,7 @@ class Trainer:
 						if hyperparams['contrastive']:
 							target_preds = model(inputs, positions, mode)
 							target_encodes = ent_target_encoded
-						
+
 							preds = model.match(target_preds, target_encodes, triple_degrees, mode, test=True, ent_list_degrees = ent_list_degrees)
 						else:
 							preds = model(inputs, positions, mode)

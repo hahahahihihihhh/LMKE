@@ -25,20 +25,20 @@ def load_model():
 
     parser.add_argument('--bert_lr', type=float, default=1e-5)
     parser.add_argument('--model_lr', type=float, default=5e-4)
-    parser.add_argument('--batch_size', type=int, default=256)  # 64
-    parser.add_argument('--epoch', type=int, default=200)
+    parser.add_argument('--batch_size', type=int, default=64)  # 64
+    parser.add_argument('--epoch', type=int, default=20)
     parser.add_argument('--weight_decay', type=float, default=1e-7)
 
-    parser.add_argument('--data', type=str, default='umls')  # fb15k-237
+    parser.add_argument('--data', type=str, default='SZ-Taxi-2015_1_1_0_00')  # fb15k-237
     parser.add_argument('--plm', type=str, default='bert_tiny',
                         choices=['bert', 'bert_tiny', 'deberta', 'deberta_large', 'roberta', 'roberta_large'])  # bert
     parser.add_argument('--description', type=str, default='desc')
 
-    parser.add_argument('--load_path', type=str, default="./params/umls-bert_tiny-desc-batch_size=64-prefix_tuning=False-max_desc_length=512-epc_92_metric_fil_mrr.pt") # None
-    parser.add_argument('--load_epoch', type=int, default=92)   # -1
+    parser.add_argument('--load_path', type=str, default="./params/SZ-Taxi-2015_1_1_0_00-bert_tiny-desc-batch_size=64-prefix_tuning=True-max_desc_length=256-epc_1_metric_fil_mrr.pt") # None
+    parser.add_argument('--load_epoch', type=int, default=1)   # -1
     parser.add_argument('--load_metric', type=str, default='mrr')   # hits1
 
-    parser.add_argument('--max_desc_length', type=int, default=50)  # 512
+    parser.add_argument('--max_desc_length', type=int, default=256)  # 512
 
     # directly run test
     parser.add_argument('--link_prediction', default=True, action='store_true') # False
@@ -131,7 +131,15 @@ def load_model():
             'text': ['./data/WN18RR/my_entity2text.txt',
                      './data/WN18RR/relation2text.txt']
         }
-
+    elif arg.data == 'SZ-Taxi-2015_1_1_0_00':
+        in_paths = {
+            'dataset': arg.data,
+            'train': './data/SZ-Taxi/2015_1_1_0_00/train.tsv',
+            'valid': './data/SZ-Taxi/2015_1_1_0_00/dev.tsv',
+            'test': './data/SZ-Taxi/2015_1_1_0_00/dev.tsv',
+            'text': ['./data/SZ-Taxi/2015_1_1_0_00/entity2text.txt',
+                     './data/SZ-Taxi/2015_1_1_0_00/relation2text.txt']
+        }
     # local
     model_path = "./cached_model/models--{}".format(plm_name)
     lm_config = AutoConfig.from_pretrained(model_path, local_files_only=True)
@@ -226,3 +234,19 @@ if __name__ == '__main__':
         if (_name == 'ent_embeddings_transe.weight' or _name == 'rel_embeddings_transe.weight'):
             print("{}, {}, {}".format(_name, _param.shape, str(_param)))
     # model.eval()
+
+# ent_embeddings.weight, torch.Size([166, 128]), tensor([[-0.1354, -0.7258,  0.4161,  ...,  0.9471, -1.1090,  1.9841],
+#         [ 0.7129, -3.1560, -0.4422,  ...,  0.1201, -1.0821, -0.5624],
+#         [ 0.9593,  0.1387,  1.2011,  ...,  0.8016, -1.0528,  1.3924],
+#         ...,
+#         [-1.0565,  0.6994, -2.0656,  ...,  0.2350,  0.2207, -0.0052],
+#         [ 0.3089, -1.0730,  0.9932,  ...,  1.1208,  0.0562,  1.6061],
+#         [ 1.7325,  0.6219, -0.2147,  ...,  0.5043,  1.7923,  2.2030]],
+#        device='cuda:0')
+# rel_embeddings.weight, torch.Size([26, 128]), tensor([[-1.7664,  0.2084,  1.2308,  ...,  1.6275, -0.9383,  0.4529],
+#         [ 1.2997, -1.1001,  0.3138,  ..., -0.4696, -2.0378,  0.3462],
+#         [ 0.0994, -0.4500,  2.0665,  ..., -1.8458,  0.6344,  1.3451],
+#         ...,
+#         [ 0.9745,  0.5027,  0.8639,  ..., -1.3735,  0.8471, -0.3733],
+#         [-0.7106, -0.5693,  0.6732,  ..., -1.0982, -2.7803, -0.1623],
+#         [ 0.2831, -0.9801, -0.4978,  ..., -0.2033,  0.2786,  0.1387]],
